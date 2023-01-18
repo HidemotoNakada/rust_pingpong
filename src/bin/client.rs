@@ -3,6 +3,11 @@ use std::net::{TcpStream};
 use std::io::{Read, Write, Error};
 use std::time::{SystemTime};
 
+fn time_in_u128() -> u128 {
+    let duration_since_epoch = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap();
+    duration_since_epoch.as_nanos()
+}
+
 
 fn client(host: & String, port: u16) -> Result<(), Error> {
     let connect_str = format!("{}:{}", host, port);
@@ -10,17 +15,20 @@ fn client(host: & String, port: u16) -> Result<(), Error> {
         Ok(mut stream) => {
             println!("Successfully connected to server in port 3333");
 
-            let duration_since_epoch = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap();
-            let timestamp_nanos = duration_since_epoch.as_nanos(); // u128
-            let msg = timestamp_nanos.to_ne_bytes();
+ 
+            let before = time_in_u128();
+            let msg = before.to_ne_bytes();
 
             stream.write(&msg).unwrap();
             stream.flush()?;
 
             let mut buf = [0u8;16];
             stream.read_exact(& mut buf)?;
-            let diff = u128::from_ne_bytes(buf);
-            println!("diff + latency= {}", diff);
+            let server_time = u128::from_ne_bytes(buf);
+
+            let after = time_in_u128();
+
+            println!("{}, {}", server_time - before, after - server_time);
         },
         Err(e) => {
             println!("Failed to connect: {}", e);

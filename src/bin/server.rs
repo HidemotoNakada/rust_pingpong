@@ -20,13 +20,13 @@ fn server(port: u16) -> Result<(), Error> {
 
         let client_time = u128::from_ne_bytes(buf);
         println!("{:?}", now - client_time);
-        let msg = (now - client_time).to_ne_bytes();
+        let msg = (now).to_ne_bytes();
         stream.write(&msg).unwrap();
         stream.flush()?;
 
 //
     }
-    Ok(())
+//    Ok(())
 }
 
 fn main()  -> Result<(), Error> {
