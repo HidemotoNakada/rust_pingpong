@@ -24,8 +24,8 @@ fn client(host: & String, port: u16) -> Result<(), Error> {
             let server_time = u128::from_ne_bytes(buf);
 
             let after = time_in_u128();
-            let t1 = server_time - before;
-            let t2: u128 = after - server_time;
+            let t1:i128 = (server_time as i128) - (before as i128);
+            let t2:i128 = (after as i128) - (server_time as i128);
             let diff: f64 = ((t2-t1) as f64) / 2.0;
 
             println!("{}, {}, difference estimation = {}", t1, t2, diff); 
