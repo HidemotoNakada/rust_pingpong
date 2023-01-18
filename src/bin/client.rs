@@ -13,9 +13,6 @@ fn client(host: & String, port: u16) -> Result<(), Error> {
     let connect_str = format!("{}:{}", host, port);
     match TcpStream::connect(connect_str) {
         Ok(mut stream) => {
-            println!("Successfully connected to server in port 3333");
-
- 
             let before = time_in_u128();
             let msg = before.to_ne_bytes();
 
@@ -27,8 +24,11 @@ fn client(host: & String, port: u16) -> Result<(), Error> {
             let server_time = u128::from_ne_bytes(buf);
 
             let after = time_in_u128();
+            let t1 = server_time - before;
+            let t2: u128 = after - server_time;
+            let diff: f64 = ((t2-t1) as f64) / 2.0;
 
-            println!("{}, {}", server_time - before, after - server_time);
+            println!("{}, {}, difference estimation = {}", t1, t2, diff); 
         },
         Err(e) => {
             println!("Failed to connect: {}", e);
