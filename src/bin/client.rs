@@ -32,7 +32,8 @@ fn client_loop(mut stream: TcpStream, interval: u64) -> Result<(), Error> {
         let t2:i128 = (after as i128) - (server_time as i128);
         let diff: f64 = ((t2-t1) as f64) / 2.0;
     
-        println!("{} {}, {}, difference estimation = {}", before, t1, t2, diff); 
+        println!("{:.2} {}, {}, difference estimation = {}", 
+                (before as f64) / 1000_000_000.0, t1, t2, diff); 
         if interval == 0 {
             send(& stream, 0)?;
             break;
@@ -42,9 +43,6 @@ fn client_loop(mut stream: TcpStream, interval: u64) -> Result<(), Error> {
     }
     Ok(())
 }
-
-
-
 
 // interval : in sec. if it is 0, one shot.
 fn client(host: & String, port: u16, interval: u64) -> Result<(), Error> {
